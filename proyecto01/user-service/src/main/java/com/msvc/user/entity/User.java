@@ -3,6 +3,8 @@ package com.msvc.user.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -19,4 +21,7 @@ public class User {
     private String name;
     private String email;
     private String information;
+
+    @Transient
+    private List<Rating> ratings = new ArrayList<>();
 }
