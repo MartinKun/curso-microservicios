@@ -6,13 +6,13 @@ import com.msvc.user.entity.Hotel;
 import com.msvc.user.entity.Rating;
 import com.msvc.user.entity.User;
 import com.msvc.user.exception.ResourceNotFoundException;
+import com.msvc.user.external.service.HotelService;
 import com.msvc.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -29,8 +29,11 @@ public class UserServiceImpl implements UserService {
     private final RestTemplate restTemplate;
     private final UserRepository userRepository;
 
+    private final HotelService hotelService;
+
     @Override
     public User saveUser(UserRequest request) {
+
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
@@ -62,11 +65,12 @@ public class UserServiceImpl implements UserService {
 
         List<Rating> ratings = userRatings.stream()
                 .map(rating -> {
-                    ResponseEntity<Hotel> forEntity = restTemplate.getForEntity(
+                    /*ResponseEntity<Hotel> forEntity = restTemplate.getForEntity(
                             "http://HOTEL-SERVICE/api/v1/hotels/" + rating.getHotelId(),
                             Hotel.class
                     );
-                    Hotel hotel = forEntity.getBody();
+                    Hotel hotel = forEntity.getBody();*/
+                    Hotel hotel = hotelService.getHotel(rating.getHotelId());
                     rating.setHotel(hotel);
                     return rating;
                 }).collect(Collectors.toList());
@@ -74,4 +78,5 @@ public class UserServiceImpl implements UserService {
         user.setRatings(ratings);
         return user;
     }
+
 }
