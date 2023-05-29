@@ -1,6 +1,5 @@
-package com.msvc.user.controller.request;
+package com.msvc.user.external.request;
 
-import com.msvc.user.external.request.HotelRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,10 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserRequest {
+public class HotelRequest {
 
     private String name;
-    private String email;
+    private String location;
     private String information;
-    private HotelRequest hotel;
 }
