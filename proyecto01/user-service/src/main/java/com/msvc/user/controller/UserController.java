@@ -3,13 +3,16 @@ package com.msvc.user.controller;
 import com.msvc.user.controller.request.UserRequest;
 import com.msvc.user.entity.User;
 import com.msvc.user.service.UserService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
@@ -30,9 +33,22 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
+    @CircuitBreaker(name = "ratingHotelBreaker", fallbackMethod = "ratingHotelFallBack")
+    public ResponseEntity<User> getUser(
+            @PathVariable Long id
+    ) {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
+    public ResponseEntity<User> ratingHotelFallBack(Long id, Exception exception) {
+        log.info("El respaldo se ejecuta porque el servicio está inactivo : ", exception.getMessage());
+        User user = User.builder()
+                .email("root1@gmail.com")
+                .name("root")
+                .information("Este usuario se crea por defecto cuando un servicio se cae")
+                .id(1323123L)
+                .build();
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
 }
