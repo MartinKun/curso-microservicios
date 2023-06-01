@@ -3,6 +3,7 @@ package com.msvc.inventory.service;
 import com.msvc.inventory.controller.response.InventoryResponse;
 import com.msvc.inventory.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
 
     @Transactional(readOnly = true)
+    @SneakyThrows
     public List<InventoryResponse> isInStock(List<String> skuCodeList) {
         return inventoryRepository.findBySkuCodeIn(skuCodeList).stream()
                 .map(inventory -> InventoryResponse.builder()
