@@ -7,6 +7,7 @@ import com.msvc.order.model.Order;
 import com.msvc.order.model.OrderLineItems;
 import com.msvc.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,7 +25,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
 
-    public void placeOrder(OrderRequest orderRequest) {
+    public String placeOrder(OrderRequest orderRequest) {
         String orderNumber = UUID.randomUUID().toString();
         List<OrderLineItems> orderLineItems = orderRequest.getOrderLineItemsDTOList()
                 .stream()
@@ -54,9 +55,11 @@ public class OrderService {
 
         if (allProductsInStock) {
             orderRepository.save(order);
+            return "Pedido ordenado con éxito.";
         } else {
             throw new IllegalArgumentException("El producto no está en stock");
         }
+
     }
 
     public OrderLineItems mapToDto(OrderLineItemsDTO orderLineItemsDTO) {
