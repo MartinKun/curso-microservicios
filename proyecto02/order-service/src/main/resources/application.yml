@@ -33,6 +33,15 @@ spring:
           json:
             type:
               mapping: event:com.msvc.order.event.OrderPlacedEvent
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+msvc:
+  queue:
+    name: cola1
 
 eureka:
   client:
