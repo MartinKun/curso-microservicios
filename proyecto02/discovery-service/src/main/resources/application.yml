@@ -19,3 +19,8 @@ app:
   eureka:
     username: eureka
     password: password
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
